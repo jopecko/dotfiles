@@ -1,0 +1,4 @@
+#!/bin/sh
+
+ssh `basename $0` $*
+

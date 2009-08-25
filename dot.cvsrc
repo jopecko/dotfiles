@@ -1,0 +1,24 @@
+# .cvsrc - CVS Initialization File
+# This file contains commonly used and useful
+# options that may inadvertently be ommitted
+# from the CLI, but are required
+
+log -N
+
+diff -uN
+
+rdiff -u
+
+# prune empty directories and create any new
+# ones that exist in the repo but not locally
+update -Pd
+
+# prune empty directories
+checkout -P
+
+release -d
+
+# avoid the mistake of accisentally tagging the repository
+# when there exists locally modified files in the sandbox
+tag -c
+

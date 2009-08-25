@@ -1,0 +1,305 @@
+#
+# Personal functions
+#
+
+#add_to_path() {
+#    local path=$1
+#    if `echo $PATH | egrep $path'(\:|$)' > /dev/null 2>&1`; then
+#        # path is already in the $PATH
+#    elif [ -d $path ]; then
+#        export $PATH=$path:$PATH
+#    fi
+#}
+
+# greps the running process list for the value of $1
+psgrep() {
+    local name=$1
+    ps aux | grep "${name}" | sed '$d'
+    unset $name
+}
+
+# tries to unarchive anything thrown at it
+unarchive() {
+    local filename=$1
+    local ext=`echo ${1} | cut -d. -f2-`
+
+    case "$ext" in
+	tar)
+	    tar xvf "$filename";;
+	tar.gz)
+	    tar xzvf "$filename";;
+	tgz)
+	    tar xzvf "$filename";;
+	gz)
+	    gunzip "$filename";;
+	tbz)
+	    tar xjvf "$filename";;
+	tbz2)
+	    tar xjvf "$filename";;
+	tar.bz2)
+	    tar xjvf "$filename";;
+	tar.bz)
+	    tar xjvf "$filename";;
+	bz2)
+	    bunzip2 "$filename";;
+	tar.Z)
+	    tar xZvf "$filename";;
+	Z)
+	    uncompress "$filename";;
+	zip)
+	    unzip "$filename";;
+	rar)
+	    unrar x "$filename";;
+	*)
+	    echo "$filename" does not have unarchive-able extension
+    esac
+}
+
+# kills the specified process(es) by starting with the TERM signal and,
+# only if necessary, working up to the violent KILL signal. For more
+# information see:
+#
+#   http://sial.org/howto/shell/kill-9/
+reallykill() {
+    if [ -z "$1" ]; then
+	echo "usage: reallykill pid [pid ..]" >&2
+	exit 100
+    fi
+
+    for pid in "$0"; do
+	cycle_kill $pid
+    done
+}
+
+cycle_kill() {
+    local pid="${1}"
+    local retval=0
+
+    for signal in "TERM" "INT" "HUP" "KILL"; do
+	kill -$signal $pid
+	let retval=$?
+	[ $retval -eq 0 ] && break
+	echo "warning: kill failed: pid=$pid, signal=$signal" >&2
+	sleep 1
+    done
+
+    return $etval
+}
+
+#
+# Git Prompt, based off of http://henrik.nyh.se/2008/git-dirty-prompt
+#
+
+# emits '-' if the pwd is untracked, else nothing
+function git_pwd_is_tracked() {
+    [ $(git log -l --pretty=oneline . 2>/dev/null | wc -l) -eq "1" ] || echo "<-"
+}
+
+# emits '*' if the current repository is 'dirty' (untracked files
+# or uncommited changes in the index)
+function parse_git_dirty() {
+    [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
+}
+
+parse_git_branch() {
+    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/(\1)/[$(git_pwd_is_tracked)\1$(parse_git_dirty)]/"
+}
+#PS1="\w\$(parse_git_branch) $ "
+#PS1='\u@\h \[\033[1;33m\]\w\[\033[0m\]$(parse_git_branch)$ '
+
+function tweet {
+  curl -n -d status="$*" \
+  https://twitter.com/statuses/update.xml \
+  --insecure &> /dev/null
+  echo "tweet'd"
+}
+
+# http://attachr.com/9288
+function myprompt() {
+    # set color names
+    # normal
+    local BK="\[\O33[0;30m\]" 	# black
+    local BL="\[\033[0;34m\]" 	# blue
+    local GR="\[\033[0;32m\]"	# green
+    local CY="\[\033[0;36m\]" 	# cyan
+    local RD="\[\033[0;31m\]" 	# red
+    local PL="\[\033[0;35m\]"  	# purple
+    local BR="\[\033[0;33m\]"  	# brown
+    local GY="\[\033[1;30m\]"  	# grey
+    # enhanced
+    local eGY="\[\033[0;37m\]" 	# light gray
+    local eBL="\[\033[1;34m\]" 	# light blue
+    local eGR="\[\033[1;32m\]" 	# light green
+    local eCY="\[\033[1;36m\]" 	# light cyan
+    local eRD="\[\033[1;31m\]" 	# light red
+    local ePL="\[\033[1;35m\]" 	# light purple
+    local eYW="\[\033[1;33m\]" 	# yellow
+    local eWT="\[\033[1;37m\]" 	# white
+    # reset to teminal default
+    local NRML="\[\033[0;0m\]"	# normal term color
+
+    # what user am i?
+    local me=`whoami`
+    # setup user-based colors schemes.
+    # play around in here for global settings
+    # or create ~/.mprc for local override.
+    case $me in
+        # root) # system god
+	#     local UCHR="# "		# root prompt character
+    	#     local UCLR=$eYW		# root prompt color
+	#     local NCLR=$PL		# username color
+	#     local ATCLR=$CY		# @ sign color
+	#     local HCLR=$eBL		# host name color
+    	#     local BRKT=$eBL		# bracket color
+	#     local PARN=$CY		# parens color
+	#     local DCLR=$CY		# dash color
+	#     local SCLR=$CY		# slash color
+	#     local TCLR=$eBL		# time color
+	#     local COCLR=$BL		# colon color
+	#     local DTCLR=$eBL		# date color
+	#     local DIR=$eCY		# current directory color
+	#     local TXT=$NRML		# root text color
+	#     local CCHR="->"		# line continuation character
+	#     local CCLR=$GY		# line continuation character color
+	# ;;
+	*) # mere mortals
+	    local UCHR="\\$ "		# user prompt character
+	    local UCLR=$eRD		# user prompt color
+	    local NCLR=$RD		# username color
+	    local ATCLR=$eRD		# @ sign color
+	    local HCLR=$RD		# host name color
+	    local BRKT=$eRD		# bracket color
+	    local PARN=$GY		# parens color
+	    local DCLR=$CY		# dash color
+	    local SCLR=$GY		# slash color
+	    local TCLR=$GR		# time color
+	    local COCLR=$BL		# colon color
+	    local DTCLR=$eGL		# date color
+	    local DIR=$RD		# current directory color
+	    local TXT=$NRML		# user text color
+	    local CCHR="-> "		# line continuation character
+	    local CCLR=$GY		# line continuation character color
+	;;
+    esac
+
+    PS2="$eRD>$RD>$eGY> "
+    local PROMPT_STYLE=$1
+    case $PROMPT_STYLE in
+	short)
+	    PS1="$HCLR\h $BRKT[$DIR \w $BRKT]$UCLR$UCHR$TXT"
+	    #PS2="$CCLR$CCHR$TXT"
+	;;
+	ext)
+            DCSIZE="\$(ls --si -s | head -1 | awk '{print \$2}')"
+            DCCONT="\$(ls -l | grep \"^-\" | wc -l | tr -d \" \")"
+            SYSU="\$(uptime | sed 's/.*://; s/,//g')"
+	    PS1="$NCLR\u$ATCLR@$HCLR\h.$(domainname)$DCLR $PARN[$TCLR \$(date '+%H%M%S')$SCLR | $eGR${DCCONT} ${GR}Files $eGR$DCSIZE${GR} Total $SCLR|$GR$SYSU $SCLR$PARN]\n$ePL\l $PARN[$DIR\w$PARN] $UCLR$UCHR$TXT"
+	    #PS2="$CCLR$CCHR$NRML"
+	;;
+	mini)
+	    PS1="$UCLR$UCHR$TXT$NRML"
+	    PS2=">"
+	;;
+	-h | --help)
+	    echo
+	    echo myprompt: a multi-mode color prompt generator
+	    echo usage: [myprompt \| mp] [short \| ext \| mini \| -h \| --help]
+	    echo
+	    echo Source and call from .bashrc with parameters
+	    echo to modify the color and layout of the bash prompt.
+	    echo
+	;;
+        *)
+            if [ "$TERM" = "dumb" ]; then
+                alias ls='ls --color=none'
+                PS1="\h \W % "
+            else
+                PS1="$RD\h $ePL\l $eRD\W $RD$UCHR$NRML"
+            fi
+	;;
+    esac
+}
+
+
+function mp() {
+    myprompt $1
+}
+
+# http://github.com/kyleburton/krb-bash-utils/tree/master
+# my find shortcuts
+
+function find_filter () {
+  grep -v .svn/ | grep -v ^.git/ | grep -v /CVS/
+}
+
+# 'find file'
+function ff () {
+  DIR="."
+  if [ -d "$1" ]; then
+    DIR="$1"
+    shift
+  fi
+
+  if [[ "$1" == -* ]]; then
+    #echo "dash arg..."
+    find "$DIR" -type f "$@" | find_filter
+  elif [ -z "$1" ]; then
+    #echo "no arg..."
+    find "$DIR" -type f | find_filter
+  else
+    #echo "many args..."
+    PAT="$1"
+    shift
+    find "$DIR" -type f -name "*$PAT*" "$@" | find_filter
+  fi
+}
+
+# find directory
+function fd () {
+  DIR="."
+  if [ -d "$1" ]; then
+    DIR="$1"
+    shift
+  fi
+
+  if [[ "$1" == -* ]]; then
+    #echo "dash arg..."
+    find "$DIR" -type d "$@" | find_filter
+  elif [ -z "$1" ]; then
+    #echo "no arg..."
+    find "$DIR" -type d | find_filter
+  else
+    #echo "many args..."
+    PAT="$1"
+    shift
+    find "$DIR" -type d -name "*$PAT*" "$@" | find_filter
+  fi
+}
+
+# find file xargs grep
+function ffxg () {
+  DIR="."
+  if [ -d "$1" ]; then
+    DIR="$1"
+    shift
+  fi
+
+  PAT="$1"
+  shift
+
+  ff "$DIR" 2>&1 | xargs grep "$@" "$PAT" 2>&1 | less -p "$PAT"
+}
+
+
+# shorhand for xargs grep
+function xg () {
+  PAT="$1"
+  shift
+  xargs grep "$@" "$PAT" 2>&1 | less -p "$PAT"
+}
+
+# http://twitter.com/szegedi/status/3448281943
+dos2unix () {
+  tr -d '\r' < $1 > tr.tmp rm $1 mv tr.tmp $1
+}
+

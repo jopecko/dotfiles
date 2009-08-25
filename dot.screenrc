@@ -1,0 +1,92 @@
+# ==============================================================================
+# File:                          $HOME/.screenrc
+# Purpose:                       Setup file for program "(GNU) screen"
+# Latest update:                 Thu Oct 23 9:39:00 EST 2008
+# ==============================================================================
+#
+# ==============================================================================
+# SEE ALSO:
+# ==============================================================================
+# SCREEN Pages:
+# http://
+#
+# Commands List:
+# http://
+#
+# MailingList:
+# http://www.yahoogroups.com/group/gnu-screen/
+#
+# ==============================================================================
+# ESCAPE - the COMMAND CHARACTER
+# ==============================================================================
+escape "``"                      # Redefine the prefix key to ` and define a
+                                 # literal ` as ``
+#
+# ==============================================================================
+# VARIABLES - Boolean values (on/off)
+# ==============================================================================
+allpartial off                   # Refresh entire screen on window change
+#altscreen on                    # restore window contents after using (e.g.) vi
+autodetach on                    # Autodetach session on hangup instead of
+                                 # terminating screen completely
+defflow off                      # Set the default flow control mode
+deflogin off                     # Do not register the window in utmp
+hardstatus on
+nethack on                      # print wackier status messages
+startup_message off              # Disable startup messages
+#
+# ==============================================================================
+# VARIABLES - Number values
+# ==============================================================================
+defscrollback 5000               # Set the default number of scrollback lines
+defmode 0620                     # Set the default mode of each psuedo tty
+vbellwait 2                      # Seconds to pause the screen for visible bell
+#
+# ==============================================================================
+# VARIABLES - Paths and Files (esp. programs)
+# ==============================================================================
+bufferfile /tmp/screen-buffer    # Filename for the paste buffer
+#shell -$SHELL                    # make the shell in every window a login shell
+shell bash
+#
+# ==============================================================================
+# VARIABLES - Strings
+# ==============================================================================
+activity "activity: window ~%"   # Message when activity occurs in a window
+vbell_msg "bell: window ~%"      # Message for visible bell
+#
+# ==============================================================================
+#
+# ===============================
+# Hardstatus Line and sorendition
+# ===============================
+#
+# An alternative hardstatus to display a bar at the bototm listing the
+# # window names and highlighting the current window name in blue
+#hardstatus alwayslastline
+#hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %m/%d %C%a "
+hardstatus alwayslastline "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %m/%d %C%a "
+
+# LEFT OFF HERE
+
+chdir                            # Change to the home directory
+shelltitle $HOST                 # Set the title of all shell windows
+
+# connect windows to the displays so programs like mplayer can find it when
+# we're inside a screen in a terminal application in a graphical environment
+#export DISPLAY=':0'
+
+# ==============================================================================
+# STARTUP of programs in an extra window:
+# ==============================================================================
+#screen -t Shell                         0 bash
+#screen -t Emacs                         1 /usr/local/bin/emacs -nw --no-init --debug-init
+#screen -t wsadmin                       2 bash
+#screen -t tivoli-vmm4ncos               3 bash
+#screen -t irc 1 emacs -nw --debug-init -f erc
+
+screen 0
+
+select 0
+
+fit

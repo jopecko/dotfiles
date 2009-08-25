@@ -1,0 +1,12 @@
+[user]
+  name = Joe O'Pecko
+  email = opeckojo@gmail.com
+[color]
+  ui = uto
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+[core]
+  excludesfile = ~/.gitexcludes
+
