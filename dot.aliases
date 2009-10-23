@@ -24,3 +24,6 @@ alias duck='du -cks * | sort -rn | head -11'
 
 # clear out history
 alias hclear='history -c; clear'
+
+# make pushd silent
+alias pushd='pushd >/dev/null'

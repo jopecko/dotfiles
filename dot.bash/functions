@@ -303,3 +303,8 @@ dos2unix () {
   tr -d '\r' < $1 > tr.tmp rm $1 mv tr.tmp $1
 }
 
+# http://gist.github.com/180587
+function psg () {
+  ps wwwaux | egrep "(firefox|%CPU)" | grep -v grep
+}
+
