@@ -68,7 +68,7 @@ for path in $paths; do
     fi
 done
 
-PATH=`echo $PATH | sed -e 's/^\://' -e 's/\s/:/g'`
+PATH=`echo $PATH | sed -e 's/^\://' -e 's/\:/:/g'`
 
 # our path takes precedence over the one defined by the
 # parent process; therefore place the original at the end
