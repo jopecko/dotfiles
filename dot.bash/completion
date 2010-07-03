@@ -1,4 +1,12 @@
 # enable programmable completion features
-#if [ -f /etc/bash_completion ]; then
-#    . /etc/bash_completion
-#fi
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+
+if [ -d /usr/local/etc/bash_completion.d ]; then
+    for f in /usr/local/etc/bash_completion.d/*; do
+       #[[ ${i##*/} != @(*~|*.bak|*.swp|\#*\#|*.dpkg*|.rpm*) ]] &&
+       #    [ \( -f $i -o -h $i \) -a -r $i ] && . $i
+        . $f
+    done
+fi

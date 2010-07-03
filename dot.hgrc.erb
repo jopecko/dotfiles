@@ -1,0 +1,7 @@
+# This is a Mercurial configuration file.
+[ui]
+username = <%= print("HG Name: "); STDOUT.flush; STDIN.gets.chomp %>
+
+[extensions]
+fetch =
+hgext.graphlog =

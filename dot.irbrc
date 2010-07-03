@@ -33,3 +33,17 @@ IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb_history"
 
 IRB.conf[:PROMPT_MODE] = :SIMPLE
 
+# http://gist.github.com/301904
+# type "some_object.my_methods" in IRB for a
+# less noisy exploration of what objects can do
+class Object
+  def my_methods
+    base_object = case self
+                  when Class  then Class.new
+                  when Module then Module.new
+                  else             Object.new
+                  end
+    (methods - base_object.methods).sort
+  end
+end
+

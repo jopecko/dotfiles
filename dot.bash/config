@@ -8,12 +8,14 @@
 if [ `/usr/bin/whoami` = "root" ]; then
     # root has a red prompt
     export PS1="\[\033[0;31m\]\u@\h \w \$ \[\033[0m\]"
-elif [ `hostname` = "puyo" -o `hostname` = "pdp10" -o `hostname` = "dynabook" ] ; then
-  # the hosts I use on a daily basis have blue
-  export PS1="\[\033[0;36m\]\u@\h \w \$ \[\033[0m\]"
 else
+  # the hosts I use on a daily basis have blue
+  #export PS1="\[\033[0;36m\]\u@\h \w \$ \[\033[0m\]"
   # purple by default
-  export PS1="\[\033[0;35m\]\u@\h \w \$ \[\033[0m\]"
+  #export PS1="\[\033[0;35m\]\u@\h \w \$ \[\033[0m\]"
+  branch='$(__git_ps1 " (%s)")'
+  export PS1="\[\033[0;35m\]\u@\h \W${branch} \$ \[\033[0m\]"
+  #PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
 fi
 
 # CLI Colors

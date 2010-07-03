@@ -1,0 +1,21 @@
+[user]
+	name = <%= print("Name: "); STDOUT.flush; STDIN.gets.chomp %>
+	email= <%= print("Email: "); STDOUT.flush; STDIN.gets.chomp %>
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = auto
+[merge]
+	tool = opendiff
+	summary = true
+[core]
+	excludesfile = <%= ENV['HOME'] %>/.gitignore
+[alias]
+	stash-unapply = !git stash show -p | git apply -R
+[format]
+        pretty = %C(yellow)%h%Creset %s %C(red)(%cr)%Creset
+[github]
+        user= <%= print("GitHub Username: "); STDOUT.flush; STDIN.gets.chomp %>
+	token = <%= print("GitHub API token: "); STDOUT.flush; STDIN.gets.chomp %>
+
