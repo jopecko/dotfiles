@@ -22,7 +22,7 @@ task :default => :dotfiles
 desc "Symlinks all my dotfiles"
 task :dotfiles do
   dotfiles.each do |dotfile|
-    link = File.expand_path("~/#{dotfile[3..-1]}")
+    link = File.expand_path("~/.#{dotfile]}")
     unless File.exists?(link)
       run %Q{ln -s "#{here(dotfile)}" "#{link}"}
     end
@@ -32,7 +32,7 @@ end
 desc "Removes all my dotfile symlinks"
 task :clean do
   dotfiles.each do |dotfile|
-    link = File.expand_path("~/#{dotfile[3..-1]}")
+    link = File.expand_path("~/.#{dotfile}")
     if File.symlink?(link)
       run %Q{rm "#{link}"}
     end
