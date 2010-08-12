@@ -240,7 +240,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; time/date/calendar stuff
 (setq
-  diary-file  "~/.emacs.d/diary"    ;        ; keep my ~/ clean
+  diary-file  "~/.diary"
   holidays-in-diary-buffer          t
   mark-holidays-in-calendar         t
   all-christian-calendar-holidays   t        ;; show christian
