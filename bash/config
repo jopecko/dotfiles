@@ -34,23 +34,20 @@ shopt -s histappend histreedit
 shopt -s cmdhist # save multi-line commands in history as single line
 shopt -s dotglob # return files beginning with a dot in path-name expansion
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
+# don't put duplicate lines in the history. See bash(1) for more options       
+# ... or force ignoredups and ignorespace                                      
+HISTCONTROL=ignoredups:ignorespace                                             
+                                                                               
+# append to the history file, don't overwrite it                               
+shopt -s histappend                                                            
+                                                                               
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)          
+HISTSIZE=1000                                                                  
+HISTFILESIZE=2000                                                              
+                                                                               
+# check the window size after each command and, if necessary,                  
+# update the values of LINES and COLUMNS.                                      
 shopt -s checkwinsize
-
-# history handling
-#
-# Erase duplicates
-export HISTCONTROL=erasedups
-# keep 5000 lines in ~/.bash_history (default is 500)
-export HISTSIZE=5000
-export HISTFILESIZE=5000
-# append to bash_history if Terminal.app quits
-shopt -s histappend
-
-# ignore duplicate lines next to each other and
-# ignore lines with a leading space
-export HISTCONTROL=ignoreboth
 
 # avoid having consecutive duplicate commands and other
 # not so useful information appended to the history list
