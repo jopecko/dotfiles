@@ -17,12 +17,12 @@ def run(cmd)
   system cmd
 end
 
-task :default => :dotfiles
+task :default => :install
 
 desc "Symlinks all my dotfiles"
 task :dotfiles do
   dotfiles.each do |dotfile|
-    link = File.expand_path("~/.#{dotfile]}")
+    link = File.expand_path("~/.#{dotfile}")
     unless File.exists?(link)
       run %Q{ln -s "#{here(dotfile)}" "#{link}"}
     end
@@ -71,7 +71,7 @@ task :install do
 end
 
 def replace_file(file)
-  system %Q{rm -rf "$HOME/.#{file.sub('.erb', '')}"}
+  system %Q{rm -f "$HOME/.#{file.sub('.erb', '')}"}
   link_file(file)
 end
 
