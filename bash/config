@@ -14,8 +14,10 @@ else
   # purple by default
   #export PS1="\[\033[0;35m\]\u@\h \w \$ \[\033[0m\]"
   branch='$(__git_ps1 " (%s)")'
-  export PS1="\[\033[0;35m\]\u@\h \W${branch} \$ \[\033[0m\]"
+  #export PS1="\[\033[0;35m\]\u@\h \W${branch} \$ \[\033[0m\]"
   #PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
+  #export PS1="\[\033[01;32m\]\u@\h \[\033[01;34m\]\W${branch} \[\033[00m\]\$ "
+  export PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w${branch} \[\033[00m\]\$ "
 fi
 
 # CLI Colors
@@ -34,19 +36,19 @@ shopt -s histappend histreedit
 shopt -s cmdhist # save multi-line commands in history as single line
 shopt -s dotglob # return files beginning with a dot in path-name expansion
 
-# don't put duplicate lines in the history. See bash(1) for more options       
-# ... or force ignoredups and ignorespace                                      
-HISTCONTROL=ignoredups:ignorespace                                             
-                                                                               
-# append to the history file, don't overwrite it                               
-shopt -s histappend                                                            
-                                                                               
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)          
-HISTSIZE=1000                                                                  
-HISTFILESIZE=2000                                                              
-                                                                               
-# check the window size after each command and, if necessary,                  
-# update the values of LINES and COLUMNS.                                      
+# don't put duplicate lines in the history. See bash(1) for more options
+# ... or force ignoredups and ignorespace
+HISTCONTROL=ignoredups:ignorespace
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
 # avoid having consecutive duplicate commands and other

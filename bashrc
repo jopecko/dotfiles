@@ -68,7 +68,7 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-[ -f /etc/bash.bashrc ] && . /etc/bashrc
+[ -f /etc/bash.bashrc ] && . /etc/bash.bashrc
 [ -f $HOME/.java_profile ] && . $HOME/.java_profile
 [ -f $HOME/.profile ] && . $HOME/.profile
 [ -f $HOME/.env_vars ] && . $HOME/.env_vars # machine-dependent env vars
