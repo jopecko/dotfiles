@@ -1,6 +1,6 @@
 (require 'mercurial)
 
-;; http://www.joshmatthews.net/blog/2010/03/dealing-with-mercurial-patch-queue-rejects-in-emacs/
+;; http://www.joshmatthews.net/blog/2010/03/faster-mercurial-patch-queue-merging-with-emacs/
 (defun switch-hg-reject ()
   (interactive)
   (let ((other-file

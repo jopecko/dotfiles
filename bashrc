@@ -2,6 +2,17 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+# Personal aliases and functions.
+
+# Personal environment variables and startup programs should go in
+# ~/.bash_profile.  System wide environment variables and startup
+# programs are in /etc/profile.  System wide aliases and functions are
+# in /etc/bashrc.
+
+if [ -f "/etc/bashrc" ] ; then
+  source /etc/bashrc
+fi
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -57,9 +68,9 @@
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
+[ -f ~/.bash_aliases ] && source ~/.bash_aliases
+[ -f ~/.bash_functions ] && source ~/.bash_functions
+[ -f ~/.bash_completions ] && source ~/.bash_completions
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -83,7 +94,7 @@ done
 
 # Add some useful directories to our path
 paths="."
-paths="$paths $HOME/bin"
+#paths="$paths $HOME/bin"
 paths="$paths /usr/local/sbin"
 
 # I commonly install utilities in $HOME/opt; find any
@@ -135,3 +146,4 @@ function start_agent {
 # System-specific configuration
 [ -f ${HOME}/.$(hostname).env ] && . ${HOME}/.$(hostname).env
 
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
