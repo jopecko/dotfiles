@@ -81,7 +81,6 @@ fi
 
 [ -f /etc/bash.bashrc ] && . /etc/bash.bashrc
 [ -f $HOME/.java_profile ] && . $HOME/.java_profile
-[ -f $HOME/.profile ] && . $HOME/.profile
 [ -f $HOME/.env_vars ] && . $HOME/.env_vars # machine-dependent env vars
 
 if [ -f ~/.env ]; then
@@ -94,7 +93,7 @@ done
 
 # Add some useful directories to our path
 paths="."
-#paths="$paths $HOME/bin"
+paths="$paths $HOME/bin"
 paths="$paths /usr/local/sbin"
 
 # I commonly install utilities in $HOME/opt; find any
@@ -125,7 +124,7 @@ SSH_ENV="$HOME/.ssh/environment"
 
 function start_agent {
   echo "Initializing new SSH agent..."
-  /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+  /usr/bin/ssh-agent | sed 's/^echo/#echo/' >| "${SSH_ENV}"
   echo succeeded
   chmod 600 "${SSH_ENV}"
   . "${SSH_ENV}" > /dev/null
@@ -133,15 +132,15 @@ function start_agent {
 }
 
 # Source SSH settings, if applicable
-#if [ -f "${SSH_ENV}" ]; then
-#  . "${SSH_ENV}" > /dev/null
-#  #ps ${SSH_AGENT_PID} doesn't work under cywgin
-#  ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
-#    start_agent;
-#  }
-#else
-#  start_agent;
-#fi
+if [ -f "${SSH_ENV}" ]; then
+    . "${SSH_ENV}" > /dev/null
+    #ps ${SSH_AGENT_PID} doesn't work under cywgin
+    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+        start_agent;
+    }
+else
+    start_agent;
+fi
 
 # System-specific configuration
 [ -f ${HOME}/.$(hostname).env ] && . ${HOME}/.$(hostname).env
