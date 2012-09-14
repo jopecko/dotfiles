@@ -94,17 +94,6 @@
 ;;               turn-on-auto-fill
 ;;               bbdb-define-all-aliases)))
 
-;; Make TAB the yas trigger key in the org-mode-hook and turn on flyspell mode
-(add-hook 'org-mode-hook
-          (lambda ()
-            ;; yasnippet
-            (make-variable-buffer-local 'yas/trigger-key)
-            (setq yas/trigger-key [tab])
-            (define-key yas/keymap [tab] 'yas/next-field-group)
-            ;; flyspell mode to spell check everywhere
-            ;;(flyspell-mode 1)
-            ))
-
 ;;  (setq org-todo-keywords
 ;;        '((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(d!/!)")
 ;;          (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED")

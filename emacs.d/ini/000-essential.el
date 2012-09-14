@@ -87,7 +87,8 @@
 (icomplete-mode t)                       ; completion in minibuffer
 (setq icomplete-prospects-height 2)      ; don't spam my minibuffer
 
-(partial-completion-mode t)              ; be smart with completion
+(if (< emacs-major-version 24)
+    (partial-completion-mode t))         ; be smart with completion
 
 (setq scroll-margin 1                    ; do smooth scrolling, ...
   scroll-conservatively 100000           ; ... the defaults ...

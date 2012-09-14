@@ -41,5 +41,9 @@ alias duck='du -cks * | sort -rn | head -11'
 # clear out history
 alias hclear='history -c; clear'
 
-# make pushd silent
-alias pushd='pushd >/dev/null'
+alias ga='git add'
+alias gb='git branch'
+alias gc='git commit'
+alias gd='git diff'
+alias go='git checkout'
+

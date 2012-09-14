@@ -13,3 +13,11 @@
 	excludesfile = /Users/opeckojo/.gitignore
 [alias]
 	stash-unapply = !git stash show -p | git apply -R
+        co = checkout
+        ci = commit
+        st = status
+        br = branch
+        hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+        type = cat-file -t
+        dump = cat-file -p
+
