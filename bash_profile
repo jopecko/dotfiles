@@ -1,12 +1,33 @@
 # .bash_profile
-#
-# Put anything special that should happen *only* for login shells here
 
-[ -f ~/.bash_aliases ] && source ~/.bash_aliases
-[ -f ~/.bash_functions ] && source ~/.bash_functions
-[ -f ~/.bash_completions ] && source ~/.bash_completions
+# Personal environment variables and startup programs.
 
-if [ -f $HOME/.bashrc ]; then
-	. $HOME/.bashrc
+# Personal aliases and functions should go in ~/.bashrc.  System wide
+# environment variables and startup programs are in /etc/profile.
+# System wide aliases and functions are in /etc/bashrc.
+
+
+append () {
+  # First remove the directory
+  local IFS=':'
+  local NEWPATH
+  for DIR in $PATH; do
+     if [ "$DIR" != "$1" ]; then
+       NEWPATH=${NEWPATH:+$NEWPATH:}$DIR
+     fi
+  done
+
+  # Then append the directory
+  export PATH=$NEWPATH:$1
+}
+
+if [ -f "$HOME/.bashrc" ] ; then
+  source $HOME/.bashrc
 fi
+
+if [ -d "$HOME/bin" ] ; then
+  append $HOME/bin
+fi
+
+unset append
 

@@ -2,6 +2,17 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+# Personal aliases and functions.
+
+# Personal environment variables and startup programs should go in
+# ~/.bash_profile.  System wide environment variables and startup
+# programs are in /etc/profile.  System wide aliases and functions are
+# in /etc/bashrc.
+
+if [ -f "/etc/bashrc" ] ; then
+  source /etc/bashrc
+fi
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -57,9 +68,9 @@
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
+[ -f ~/.bash_aliases ] && source ~/.bash_aliases
+[ -f ~/.bash_functions ] && source ~/.bash_functions
+[ -f ~/.bash_completions ] && source ~/.bash_completions
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -70,7 +81,6 @@ fi
 
 [ -f /etc/bash.bashrc ] && . /etc/bash.bashrc
 [ -f $HOME/.java_profile ] && . $HOME/.java_profile
-[ -f $HOME/.profile ] && . $HOME/.profile
 [ -f $HOME/.env_vars ] && . $HOME/.env_vars # machine-dependent env vars
 
 if [ -f ~/.env ]; then
@@ -113,25 +123,26 @@ export PATH
 SSH_ENV="$HOME/.ssh/environment"
 
 function start_agent {
-  echo "Initializing new SSH agent..."
-  /usr/bin/ssh-agent | sed 's/^echo/#echo/' >| "${SSH_ENV}"
-  echo succeeded
-  chmod 600 "${SSH_ENV}"
-  . "${SSH_ENV}" > /dev/null
-  /usr/bin/ssh-add;
+    echo "Initializing new SSH agent..."
+    /usr/bin/ssh-agent | sed 's/^echo/#echo/' >| "${SSH_ENV}"
+    echo succeeded
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" > /dev/null
+    /usr/bin/ssh-add;
 }
 
 # Source SSH settings, if applicable
 if [ -f "${SSH_ENV}" ]; then
-  . "${SSH_ENV}" > /dev/null
-  #ps ${SSH_AGENT_PID} doesn't work under cywgin
-  ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
-    start_agent;
-  }
+    . "${SSH_ENV}" > /dev/null
+    #ps ${SSH_AGENT_PID} doesn't work under cywgin
+    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+        start_agent;
+    }
 else
-  start_agent;
+    start_agent;
 fi
 
 # System-specific configuration
 [ -f ${HOME}/.$(hostname).env ] && . ${HOME}/.$(hostname).env
 
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
