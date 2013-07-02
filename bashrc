@@ -143,6 +143,7 @@ else
 fi
 
 # System-specific configuration
-[ -f ${HOME}/.$(hostname).env ] && . ${HOME}/.$(hostname).env
+host="${HOSTNAME%%.*}"
+[ -f ${HOME}/.${host}.env ] && . ${HOME}/.${host}.env
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
