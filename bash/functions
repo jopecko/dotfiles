@@ -308,3 +308,15 @@ function psg () {
   ps wwwaux | egrep "(firefox|%CPU)" | grep -v grep
 }
 
+drm() {
+  docker rm $(docker ps -q -a)
+}
+
+dri() {
+  docker rmi $(docker images -q)
+}
+
+db() {
+  docker build -t="$1" .
+}
+

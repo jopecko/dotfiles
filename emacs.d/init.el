@@ -23,13 +23,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ELPA
-;(add-to-list 'package-archives
-;             '("marmalade" . "http://marmalade-repo.org/packages/") t)
-
-(let ((fn (expand-file-name "~/.emacs.d/elpa/package.el")))
-  (when (file-readable-p fn)
-    (load fn)
-    (package-initialize)))
+(when (>= emacs-major-version 24)
+  (require 'package)
+  (add-to-list 'package-archives
+               '("marmalade" .
+                 "http://marmalade-repo.org/packages/"))
+  (package-initialize))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

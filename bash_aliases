@@ -63,3 +63,7 @@ alias grs='git rebase --skip'
 alias gsl='git stash list'
 alias gss='git stash save'
 
+# docker http://www.kartar.com/2014/03/some-useful-docker-bash-functions-and-aliases/
+alias dip="docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
+alias dkd="docker run -d -P"
+alias dki="docker run -t -i -P"
