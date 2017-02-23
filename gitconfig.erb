@@ -39,8 +39,8 @@
         ls = ls-files
         rso = remote show origin
 
-        # show files ignore by git
-        ign = 
+        # fetch a PR from origin
+        fpr = !sh -c 'git fetch origin pull/$1/head:pr-$1' -
 [format]
         pretty = %C(yellow)%h%Creset %s %C(red)(%cr)%Creset
 [branch]
