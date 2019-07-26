@@ -4,9 +4,9 @@ syntax enable                          " enable syntax processing
 filetype plugin indent on              " file type-based indentation
 
 " Spaces & Tabs
-set tabstop=2                          " number of visual spaces per TAB
-set shiftwidth=2                       " affects how automatic indentation works with >>, << or ==
-set softtabstop=2                      " number of spaces in tab when editing
+set tabstop=4                          " number of visual spaces per TAB
+set shiftwidth=4                       " affects how automatic indentation works with >>, << or ==
+set softtabstop=4                      " number of spaces in tab when editing
 set expandtab                          " tabs are spaces
 
 " UI Config

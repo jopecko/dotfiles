@@ -1,20 +1,27 @@
+#!/bin/bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
-
-# Personal aliases and functions.
 
 # Personal environment variables and startup programs should go in
 # ~/.bash_profile.  System wide environment variables and startup
 # programs are in /etc/profile.  System wide aliases and functions are
 # in /etc/bashrc.
 
-if [ -f "/etc/bashrc" ] ; then
-  source /etc/bashrc
-fi
+# if not running interactively, don't do anything
+case $- in
+	*i*) ;;
+	*) return;;
+esac
 
-# If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+if [ -f "/etc/bashrc" ] ; then
+	# shellcheck source=/dev/null
+	source /etc/bashrc
+fi
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"

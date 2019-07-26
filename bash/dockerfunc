@@ -317,7 +317,7 @@ irssi() {
 	# relies_on notify_osd
 
 	docker run --rm -it \
-		-v /etc/localtime:/etc/localtime:ro \
+		-e TZ=`ls -la /etc/localtime | cut -d/ -f8-9` \
 		-v "${HOME}/.irssi:/home/user/.irssi" \
 		--read-only \
 		--name irssi \
