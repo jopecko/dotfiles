@@ -42,3 +42,10 @@ set convert-meta off
 ## enable Alt-arrows
 "\e[1;5D": backward-word ### Alt left
 "\e[1;5C": forward-word ### Alt right
+
+# briefly highligh the opening parenthesis/bracket when typing closing
+set blink-matching-paren on
+
+# enable ls-like coloring of directories and executables when listing
+# possibilities for tab completion
+set colored-stats on
