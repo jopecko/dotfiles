@@ -26,9 +26,10 @@ alias grepp="ps aux | grep"
 alias ff='find . -follow -name'
 
 alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
+alias cp='cp -i --backup=mumbered'
+alias mv='mv -i --backup=numbered'
 alias mkdir='mkdir -p'
+alias ln='ln --backup=numbered'
 
 # just plain lazy
 alias ..='cd ..'
@@ -130,3 +131,6 @@ alias mv='mv -i'
 
 # untar
 alias untar='tar xvf'
+
+# https://github.com/lihaoyi/Ammonite/issues/607
+alias amm="amm --no-remote-logging"
