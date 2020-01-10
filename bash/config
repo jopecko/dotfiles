@@ -54,4 +54,4 @@ shopt -s checkwinsize
 
 # avoid having consecutive duplicate commands and other
 # not so useful information appended to the history list
-export HISTIGNORE="\&:ls:ls *:mutt:[bf]g:exit:man:pws:cd ..: cd ~-:cd -:jobs:set -x"
+export HISTIGNORE="\&:ls:ls *:ll:ll *:mutt:[bf]g:exit:man:pws:cd ..: cd ~-:cd -:jobs:set -x"
