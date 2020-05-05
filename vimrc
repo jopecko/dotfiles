@@ -3,6 +3,8 @@ execute pathogen#infect()
 syntax enable                          " enable syntax processing
 filetype plugin indent on              " file type-based indentation
 
+set backspace=indent,eol,start
+
 " Spaces & Tabs
 set tabstop=4                          " number of visual spaces per TAB
 set shiftwidth=4                       " affects how automatic indentation works with >>, << or ==
