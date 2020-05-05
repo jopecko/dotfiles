@@ -117,3 +117,4 @@ fabric.properties
 
 .metals
 .bloop
+project/metals.sbt
