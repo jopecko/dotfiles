@@ -1,0 +1,5 @@
+pgcli/.config/pgcli/history
+*~
+*.swp
+ssh/.ssh/known_hosts
+pass/.gnupg/random_seed

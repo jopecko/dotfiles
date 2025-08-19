@@ -1,48 +1,75 @@
-.PHONY: all bin dotfiles etc test shellcheck
+# List of packages to manage with stow
+PACKAGES ?= $(filter-out .git .github, $(wildcard */))
 
-all: bin dotfiles etc
+# Directory where stow will look for packages. Default is current directory
+DIR ?= $$(pwd)
 
-bin:
-	# add aliases for all the things in bin
-	for file in $(shell find $(CURDIR)/bin -type f -not -name "*-backlight" -not -name ".*.swp"); do \
-		f=$$(basename $$file); \
-		sudo ln -sf $$file /usr/local/bin/$$f; \
+# Default location where stow will create symbolic links
+TARGET ?= ${HOME}
+
+IGNORE ?= \.DS_Store
+
+# Stow command to create links
+STOW_CMD = stow \
+	--dir="${DIR}" \
+	--target="${TARGET}" \
+	--ignore="${IGNORE}" \
+	--ignore="\.DS_Store" \
+	--ignore=".*\.template" \
+	--no-folding \
+	--verbose
+
+# Function to backup existing files for a specific package if they exist
+define backup_if_exists
+	checks=$$(${STOW_CMD} --no --verbose ${1} 2>&1 | \
+		egrep '\* existing target is ' | \
+		sed 's/  \* existing target is neither a link nor a directory: //'); \
+	for file in $$checks; do \
+		filepath=${TARGET}/$$file; \
+		backup_suffix="backup-$$(date -u +%Y%m%d%H%M%S)"; \
+		echo "Creating backup $$filepath.$$backup_suffix"; \
+		mv -h "$$filepath" "$$filepath.$$backup_suffix"; \
 	done
+endef
 
-dotfiles:
-	# add aliases for dotfiles
-	for file in $(shell find $(CURDIR) -name ".*" -not -name ".gitignore" -not -name ".travis.yml" -not -name ".git" -not -name ".*.swp" -not -name ".gnupg"); do \
-		f=$$(basename $$file); \
-		ln -sf $$file $(HOME)/$$f; \
-	done; \
-	gpg --list-keys || true;
-	ln -sfn $(CURDUR)/.gnupg/gpg.conf $(HOME)/.gpg/gpg.conf;
-	ln -sfn $(CURDIR)/.gnupg/gpg-agent.conf $(HOME)/.gnupg/gpg-agent.conf;
-	ln -fn $(CURDIR)/gitignore $(HOME)/.gitignore;
-	git update-index --skip-worktree $(CURDIR)/.gitconfig;
+# Default rule to create symbolic links for all packages
+all: stow
 
-etc:
-	sudo mkdir -p /etc/docker/secomp
-	for file in $(shell find $(CURDIR)/etc/ -type f -not -name ".*.swp"); do \
-		f=$$(echo $$file | sed -e 's|$(CURDIR)||'); \
-		sudo ln -f $$file $$f; \
-	done
-	systemctl --user daemon-reload || true
-	sudo systemctl daemon-reload
+# Rule to backup existing configurations
+backup:
+	@echo "Checking for existing files to backup..."
+	@$(foreach package,$(PACKAGES), \
+		$(call backup_if_exists,$(package));)
 
-test: shellcheck
+# Rule to link configurations using stow
+stow: backup
+	@echo "Applying stow for packages..."
+	@$(foreach package,${PACKAGES}, \
+		$(STOW_CMD) ${package};)
 
-# if this session isn't interactive, then we don't want to allocate a
-# TTY, which would fail, but if it is interactive, we do want to attach
-# so that the user can send e.g. ^C through.
-INTERACTIVE := $(shell [ -t 0 ] && echo 1 || echo 0)
-ifeq ($(INTERACTIVE), 1)
-	DOCKER_FLAGS += -t
-endif
+# Rule to remove symbolic links
+unstow:
+	@echo "Removing stow links for packages..."
+	@$(foreach package,$(PACKAGES), \
+		$(STOW_CMD) -D $(package);)
 
-shellcheck:
-	docker run --rm -i $(DOCKER_FLAGS) \
-		--name df-shellcheck \
-		-v $(CURDIR):/usr/src:ro \
-		--workdir /usr/src \
-		r.j3ss.co/shellcheck ./test.sh
+# Rule to reapply symbolic links
+restow: backup unstow stow
+
+# Rule to display help
+help:
+	@echo ""
+	@echo "\033[1mUSAGE\033[0m"
+	@echo ""
+	@echo "  make [target]"
+	@echo ""
+	@echo "\033[1mTARGETS\033[0m"
+	@echo ""
+	@echo "  stow    - Create symlinks for all packages (default)"
+	@echo "  restow  - Reapply symlinks for all packages"
+	@echo "  unstow  - Remove symlinks for all packages (\033[31mcaution\033[0m)"
+	@echo "  help    - Show this help message"
+	@echo ""
+
+.PHONY: all backup stow unstow restow help
+

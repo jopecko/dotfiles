@@ -1,0 +1,4 @@
+\.git
+misc
+^/.*\.org
+bin

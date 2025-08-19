@@ -1,0 +1,212 @@
+[alias]
+    stash-unapply = !git stash show -p | git apply -R
+    st = status
+    ci = commit --verbose
+    amend = commit --amend
+    aa = add --all
+    ff = merge --ff-only
+    noff = merge --no-ff
+    fa = fetch --all
+    ds = diff --stat=160,120
+    br = branch
+    co = checkout
+    df = diff
+    dc = diff --cached
+    lg = log -p
+    lol = log --graph --decorate --pretty=oneline --abbrev-commit
+    lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+    ls = ls-files
+    rso = remote show origin
+    rpo = remote prune origin
+    lg = log --pretty=format:'%Cred%h%Creset %C(bold blue)%an%Creset %Cgreen%cr%Creset %s%C(bold red)%d%Creset'
+
+    # fetch a PR from origin
+    fpr = !sh -c 'git fetch origin pull/$1/head:pr-$1' -
+
+    # View abbreviated SHA, description, and history graph of the latest 20 commits
+    l = log --pretty=oneline -n 20 --graph --abbrev-commit
+
+    # View the current working tree status using the short format
+    s = status -s
+
+    # Show the diff between the latest commit and the current state
+    d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+
+    # `git di $number` shows the diff between the state `$number` revisions ago and current state
+    di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+
+    # Checkout a pull request from origin (of a github repo)
+    npr = !"pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr"
+
+    # Clone a repository including all submodules
+    c = clone --recursive
+
+    # Pull in remote changes for the current repository and all its submodules
+    p = !"git pull; git submodule foreach git pull origin master"
+
+    # Commit all changes
+    ca = !git add -A && git commit -av
+
+    # Switch to a branch, creating if necessary
+    go = "!f() { git checkout -b \"$1\" 2 > /dev/null || git checkout \"$1\"; }; f"
+
+    # Color graph log view
+    graph = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%x20(%ce)%n%x20%s%n"
+
+    # Show verbose output about tags, branches, or remotes
+    tags = tag -1
+    branches = !"git branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate"
+    remotes = remote -v
+
+    # Amend the currently staged files to the latest commit
+    amend = commit --amend --reuse-message=HEAD
+
+    # Credit an author on the latest commit
+    credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
+
+    # Interactive rebase with the given number of latest commits
+    reb = "!r() { git rebase -i HEAD~$1; }; r"
+
+    # Find branches containing commit
+    fb = "!f() { git branch -a --contains $1; }; f"
+
+    # Find tags containing commit
+    ft = "!f() { git describe --always --contains $1; }; f"
+
+    # Find commits by source code
+    fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+
+    # Find commits by commit message
+    fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+
+    # Remove branches that have already been merged with master
+    # a.k.a. ‘delete merged’
+    dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
+
+    # List contributors with number of commits
+    contributors = shortlog --summary --numbered
+
+    # from seth vargo https://gist.github.com/sethvargo/6b2f7b592853381690bfe3bd00947e8f
+    unreleased = "!f() { git fetch --tags && git diff $(git tag | tail -n 1); }; f"
+    up = !git pull origin master && git remote prune origin && git submodule update --init --recursive
+    undo = !git reset HEAD~1 --mixed
+    top = !git log --format=format:%an | sort | uniq -c | sort -r | head -n 2
+
+    # from trevor bramble https://twitter.com/TrevorBramble/status/774292970681937920
+    alias=!git config -l | grep ^alias | cut -c 7- | sort
+
+    lbd = "!f() { git branch -vv | grep ': gone]' | grep -v '\\*' | awk '{print $1;}' | xargs -I % -p git branch -D %; }; f"
+
+[apply]
+    # Detect whitespace errors when applying a patch
+    whitespace = fix
+
+[branch]
+
+    autosetuprebase = always
+    sort = -committerdate
+
+[color]
+
+    # Use colors in Git commands that are capable of colored output when
+    # outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
+    ui = auto
+
+[color "branch"]
+
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+
+    whitespace = reverse red
+    meta = yellow bold
+    frag = magenta bold       # line info
+    old = red bold            # deletions
+    new = green bold          # additions
+
+[color "status"]
+
+    added = yellow
+    changed = green
+    untracked = cyan
+
+[column]
+    ui = auto
+
+[commit]
+    verbose = true
+
+[core]
+
+    # Treat spaces before tabs and all kinds of trailing whitespace as an error
+    # [default] trailing-space: looks for spaces at the end of a line
+    # [default] space-before-tab: looks for spaces before tabs at the beginning of a line
+    whitespace = fix,space-before-tab,-indent-with-non-tab,trailing-space,cr-at-eol
+
+    # Make `git rebase` safer on OS X
+    # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
+    trustctime = false
+    editor = vim
+
+[diff]
+
+    # Detect copies as well as renames
+    #renames = copies
+    algorithm = histogram
+    colorMoved = plain
+    mnemonicPrefix = true
+    renames = true
+
+[help]
+
+    # Automatically correct and execute mistyped commands
+    #autocorrect = 1
+    autocorrect = prompt
+
+[fetch]
+    prune = true
+    pruneTags = true
+    all = true
+
+[format]
+
+    pretty = %C(yellow)%h%Creset %s %C(red)(%cr)%Creset
+
+[merge]
+
+    tool = opendiff
+    summary = true
+    commit = no
+    ff = no
+
+    # Include summaries of merged commits in newly created merge commit messages
+    log = true
+
+[push]
+
+    #default = tracking
+    default = simple
+    autoSetupRemote = true
+    followTags = true
+
+[rebase]
+    autoSquash = true
+    autoStash = true
+    updateRefs = true
+
+[rerere]
+    enabled = true
+    autoupdate = true
+
+[tag]
+    sort = version:refname
+
+[user]
+
+    name = Joe O'Pecko
+    email= jopecko@users.noreply.github.com
+
+[pull]
+    rebase = true
