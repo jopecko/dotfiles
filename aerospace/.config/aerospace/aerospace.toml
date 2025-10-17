@@ -141,6 +141,21 @@ if.app-id = 'com.apple.finder'
 check-further-callbacks = true
 run = 'layout floating'
 
+[[on-window-detected]]
+if.app-id = 'com.elasticvue.app'
+check-further-callbacks = true
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.jetbrains.jbr.java'
+check-further-callbacks = true
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+check-further-callbacks = true
+run = 'layout floating'
+
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 # 'main' binding mode must be always presented
