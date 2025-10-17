@@ -124,3 +124,54 @@ project/project/*
 .vscode/
 
 **/scale-down.sh
+
+#######
+# SBT-specific ignores
+.DS_Store
+.idea/
+.bloop/
+.metals/
+.vscode/
+target/
+project/target/
+project/project/
+logs/
+tmp/
+*.log
+*.tmp
+*.bak
+*.swp
+*.iml
+*.ipr
+*.iws
+
+# Scala/Java build artifacts
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+classes/
+
+# Operating System specific ignores
+.DS_Store
+Thumbs.db
+
+# IntelliJ IDEA specific ignores
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse specific ignores
+.project
+.classpath
+.settings/
+
+# Scala compilation cache
+.scala_dependencies
+.history/
+
+# bloop specific ignores
+.bloop/
