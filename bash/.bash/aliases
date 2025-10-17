@@ -1,5 +1,9 @@
 # enable color support of ls and also add handy aliases
-if command -v dircolors >/dev/null 2>&1; then
+if command -v eza >/dev/null; then
+    alias l='eza -la --icons'
+    alias ls='eza'
+    alias tree='eza -T'
+elif command -v dircolors >/dev/null 2>&1; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dir\
 colors -b)"
     alias ls='ls --color=auto'
@@ -12,10 +16,10 @@ colors -b)"
 fi
 
 # some more ls aliases
-alias ll='ls -alFh'
-alias la='ls -A'
-alias l='ls -CF'
-alias l.='ls -d .*'
+#alias ll='ls -alFh'
+#alias la='ls -A'
+#alias l='ls -CF'
+#alias l.='ls -d .*'
 
 alias emac="emacs -nw -q --no-site-file"
 alias ri="ri -f ansi -T"
