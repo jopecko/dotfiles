@@ -37,7 +37,22 @@ Put secrets and settings for one machine in `~/.<short-hostname>.env`.
 bin/sync-dotfiles.sh
 ```
 
-The script pulls the changes and runs `make stow`, which links new files.
+The script pulls the changes and runs `make stow`. `make stow` fetches the
+submodules and links new files.
+
+## tmux
+
+`tmux/.config/tmux/oh-my-tmux` is a submodule of
+[Oh my tmux!](https://github.com/gpakosz/.tmux), and `tmux.conf` is a link to
+its `.tmux.conf`. Put your changes in `tmux.conf.local`.
+
+To move to a newer upstream version:
+
+```sh
+git -C tmux/.config/tmux/oh-my-tmux fetch
+git -C tmux/.config/tmux/oh-my-tmux checkout origin/master
+git commit -am "tmux: update oh-my-tmux"
+```
 
 ## Bash layout
 
