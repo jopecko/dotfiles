@@ -1,25 +1,23 @@
-#!/bin/bash
-set -e
-set -o pipefail
+#!/usr/bin/env bash
+# Run shellcheck on every tracked shell file. zsh scripts are skipped,
+# because shellcheck does not support zsh.
+set -euo pipefail
+cd "$(dirname "$0")/.."
 
-ERRORS=()
+scripts=()
+while IFS= read -r file; do
+    case "$file" in
+        bash/*) ;;
+        *) head -n 1 "$file" | grep -qE '^#!.*[/ ](ba)?sh( |$)' && scripts+=("$file") ;;
+    esac
+done < <(git ls-files)
 
-# find all executables and run `shellcheck`
-for f in $(find . -type f -not -iwholename '*.git*' -not -name "yubitouch.sh" | sort -u); do
-	if file "$f" | grep --quiet shell; then
-		{
-			shellcheck "$f" && echo "[OK]: successfully linted $f"
-		} || {
-			# add to errors
-			ERRORS+=("$f")
-		}
-	fi
-done
+status=0
+shellcheck -S warning -s bash bash/.bashrc bash/.bash_profile bash/.bash/* || status=1
+shellcheck -S warning -s sh bash/.profile || status=1
+shellcheck -S warning "${scripts[@]}" || status=1
 
-if [ ${#ERRORS[@]} -eq 0 ]; then
-	echo "No errors, hooray"
-else
-	echo
-	These files failed shellcheck: ${ERRORS[*]}"
-	exit 1
+if [ "$status" -eq 0 ]; then
+    echo "shellcheck: no warnings"
 fi
+exit "$status"

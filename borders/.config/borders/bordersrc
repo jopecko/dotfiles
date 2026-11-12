@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 red="0xfff7768e"
 blue="0xff7aa2f7"

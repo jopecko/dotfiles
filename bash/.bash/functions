@@ -12,7 +12,7 @@ psgrep() {
 # tries to unarchive anything thrown at it
 unarchive() {
     local filename=$1
-    local ext=`echo ${1} | cut -d. -f2-`
+    local ext=${filename#*.}
 
     case "$ext" in
 	tar)
@@ -53,14 +53,18 @@ function xg () {
   xargs grep "$@" "$PAT" 2>&1 | less -p "$PAT"
 }
 
+# Unquoted $(...) is intended: one argument per container or image id.
+# shellcheck disable=SC2046
 dkillall() {
   docker kill $(docker ps -q)
 }
 
+# shellcheck disable=SC2046
 drm() {
   docker rm $(docker ps -q -a)
 }
 
+# shellcheck disable=SC2046
 dri() {
   docker rmi $(docker images -q)
 }
@@ -82,10 +86,7 @@ function valid_ip()
     local  stat=1
 
     if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-        OIFS=$IFS
-        IFS='.'
-        ip=($ip)
-        IFS=$OIFS
+        IFS=. read -r -a ip <<< "$ip"
         [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 \
             && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
         stat=$?

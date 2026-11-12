@@ -8,6 +8,7 @@ else
 fi
 
 # history -a saves each command at once, so all open shells share history
+# shellcheck disable=SC2154 # __rc is set inside the string
 PROMPT_COMMAND='__rc=$?; history -a; [ $__rc -eq 0 ] || printf "(╯°□°）╯︵ ┻━┻\n"'
 
 CDPATH=:$GOPATH/src/github.com:$GOPATH/src/golang.org:$GOPATH/src:$HOME/.repos

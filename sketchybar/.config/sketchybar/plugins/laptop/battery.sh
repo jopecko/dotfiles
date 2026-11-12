@@ -32,7 +32,7 @@ case ${PERCENTAGE} in
     ;;
 esac
 
-if [[ $CHARGING != "" ]]; then
+if [ "$CHARGING" != "" ]; then
     ICON=""
     ICON_COLOR=0xffeed49f
 fi
