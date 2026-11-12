@@ -2,5 +2,4 @@ pgcli/.config/pgcli/history
 pgcli/.config/pgcli/log
 *~
 *.swp
-ssh/.ssh/known_hosts
-pass/.gnupg/random_seed
+.DS_Store
