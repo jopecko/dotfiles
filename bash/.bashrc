@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# shellcheck source=/dev/null
+[ -r ~/.bash/env ] && . ~/.bash/env
+
 # if not running interactively, don't do anything
 case $- in
 	*i*) ;;
@@ -49,29 +52,12 @@ if [ -f ~/.env ]; then
   source ~/.env
 fi
 
-# path goes first so aliases can detect Homebrew tools like eza.
 # Later files override earlier ones; exports must stay after config.
-for file in path aliases completion config exports functions; do
+for file in aliases completion config exports functions; do
     # shellcheck source=/dev/null
     source ~/.bash/"$file"
 done
 unset file
-
-# Add some useful directories to our path
-paths="$HOME/bin"
-paths="$paths /usr/local/sbin"
-
-# I commonly install utilities in $HOME/opt; find any
-# bin directories therein and add them to paths
-for binDir in `find $HOME/opt -type d -name bin`; do
-    paths="$paths $binDir"
-done
-
-for path in $paths; do
-    add_to_path "$path"
-done
-unset path paths binDir
-export PATH
 
 # launchd (macOS) or the desktop session usually provides an agent, and
 # `ssh -A` forwards one; start our own only when none is reachable.

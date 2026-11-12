@@ -20,6 +20,11 @@ else
   export PS1="\[\033[01;31m\]\h\[\033[01;33m\]:\W${branch} \[\033[01;36m\]\$\[\033[00m\] "
 fi
 
+CDPATH=:$GOPATH/src/github.com:$GOPATH/src/golang.org:$GOPATH/src:$HOME/.repos
+
+# shellcheck source=/dev/null
+[ -f "$HOME/google-cloud-sdk/completion.bash.inc" ] && . "$HOME/google-cloud-sdk/completion.bash.inc"
+
 # CLI Colors
 export CLICOLOR=1
 # use yellow for dirs

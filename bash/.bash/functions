@@ -2,17 +2,6 @@
 # Personal functions
 #
 
-add_to_path() {
-    # https://superuser.com/a/39995
-    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-        if [ "$2" = "prepend" ]; then
-            PATH="$1${PATH:+":$PATH"}"
-        else
-            PATH="${PATH:+"$PATH:"}$1"
-        fi
-    fi
-}
-
 # greps the running process list for the value of $1
 psgrep() {
     local name=$1

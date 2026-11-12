@@ -1,0 +1,76 @@
+#!/bin/bash
+# Sourced by every shell, interactive or not (including `ssh host cmd`),
+# so it must stay fast and print nothing. Safe to source more than once.
+
+# prepend moves an existing entry to the front; append leaves it in place.
+add_to_path() {
+    [ -d "$1" ] || return 0
+    if [ "$2" = "prepend" ]; then
+        local rest=":$PATH:"
+        rest=${rest//:"$1":/:}
+        rest=${rest#:}
+        rest=${rest%:}
+        PATH="$1${rest:+:$rest}"
+    elif [[ ":$PATH:" != *":$1:"* ]]; then
+        PATH="${PATH:+$PATH:}$1"
+    fi
+}
+
+if [ -z "$HOMEBREW_PREFIX" ]; then
+    for prefix in /opt/homebrew /home/linuxbrew/.linuxbrew; do
+        [ -x "$prefix/bin/brew" ] && HOMEBREW_PREFIX=$prefix && break
+    done
+    unset prefix
+fi
+if [ -n "$HOMEBREW_PREFIX" ]; then
+    export HOMEBREW_PREFIX
+    export HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
+    if [ -d "$HOMEBREW_PREFIX/Homebrew" ]; then
+        export HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
+    else
+        export HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX"
+    fi
+
+    add_to_path "$HOMEBREW_PREFIX/sbin" prepend
+    add_to_path "$HOMEBREW_PREFIX/bin" prepend
+    # GNU tools ahead of the BSD ones on macOS; these dirs do not exist on Linux
+    for tool in coreutils gnu-sed findutils; do
+        add_to_path "$HOMEBREW_PREFIX/opt/$tool/libexec/gnubin" prepend
+    done
+    unset tool
+    add_to_path "$HOMEBREW_PREFIX/opt/libpq/bin"
+
+    [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}"
+    [[ ":${INFOPATH:-}:" == *":$HOMEBREW_PREFIX/share/info:"* ]] ||
+        export INFOPATH="$HOMEBREW_PREFIX/share/info:${INFOPATH:-}"
+fi
+
+export GOPATH="${HOME}/.go"
+
+add_to_path "$HOME/bin"
+add_to_path /usr/local/sbin
+add_to_path "$GOPATH/bin"
+add_to_path "${KREW_ROOT:-$HOME/.krew}/bin"
+add_to_path "$HOME/.local/bin"
+if [ -d "$HOME/opt" ]; then
+    while IFS= read -r bin_dir; do
+        add_to_path "$bin_dir"
+    done < <(find "$HOME/opt" -type d -name bin)
+    unset bin_dir
+fi
+
+# shellcheck source=/dev/null
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+# shellcheck source=/dev/null
+[ -f "$HOME/google-cloud-sdk/path.bash.inc" ] && . "$HOME/google-cloud-sdk/path.bash.inc"
+export PATH
+
+if [ -S "$HOME/.colima/default/docker.sock" ]; then
+    export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
+    # https://github.com/testcontainers/testcontainers-java/issues/6450#issuecomment-1814342263
+    export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+fi
+
+export XDG_CONFIG_HOME="$HOME/.config"
+export LANG="en_US.UTF-8"
+export MANPAGER="less -X"
