@@ -95,7 +95,13 @@ command -v md5sum > /dev/null || alias md5sum="md5"
 command -v sha1sum > /dev/null || alias sha1sum="shasum"
 
 # Trim new lines and copy to clipboard
-alias c="tr -d '\n' | pbcopy"
+if command -v pbcopy >/dev/null; then
+    alias c="tr -d '\n' | pbcopy"
+elif command -v wl-copy >/dev/null; then
+    alias c="tr -d '\n' | wl-copy"
+else
+    alias c="tr -d '\n' | xclip -selection clipboard"
+fi
 
 # URL-encode strings
 alias urlencode='python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(sys.argv[1]))"'

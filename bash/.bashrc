@@ -39,6 +39,9 @@ if [ -f "/etc/bashrc" ] ; then
 	source /etc/bashrc
 fi
 
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
 [ -f $HOME/.java_profile ] && . $HOME/.java_profile
 [ -f $HOME/.env_vars ] && . $HOME/.env_vars # machine-dependent env vars
 
@@ -48,7 +51,7 @@ fi
 
 # path goes first so aliases can detect Homebrew tools like eza.
 # Later files override earlier ones; exports must stay after config.
-for file in path aliases config exports functions; do
+for file in path aliases completion config exports functions; do
     # shellcheck source=/dev/null
     source ~/.bash/"$file"
 done
@@ -69,6 +72,28 @@ for path in $paths; do
 done
 unset path paths binDir
 export PATH
+
+# launchd (macOS) or the desktop session usually provides an agent, and
+# `ssh -A` forwards one; start our own only when none is reachable.
+ssh_agent_reachable() {
+    ssh-add -l >/dev/null 2>&1
+    [ $? -ne 2 ]
+}
+if command -v ssh-agent >/dev/null && ! ssh_agent_reachable; then
+    SSH_ENV="$HOME/.ssh/environment"
+    # shellcheck source=/dev/null
+    [ -f "$SSH_ENV" ] && . "$SSH_ENV" >/dev/null
+    if ! ssh_agent_reachable; then
+        echo "Initializing new SSH agent..."
+        mkdir -p -m 700 "$HOME/.ssh"
+        ssh-agent | sed 's/^echo/#echo/' >| "$SSH_ENV"
+        chmod 600 "$SSH_ENV"
+        # shellcheck source=/dev/null
+        . "$SSH_ENV" >/dev/null
+        ssh-add
+    fi
+fi
+unset -f ssh_agent_reachable
 
 # System-specific configuration
 host="${HOSTNAME%%.*}"
