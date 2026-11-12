@@ -31,7 +31,6 @@ alias ff='find . -follow -name'
 
 alias rm='rm -i'
 alias mkdir='mkdir -p'
-alias ln='ln --backup=numbered'
 
 # just plain lazy
 alias ..='cd ..'
