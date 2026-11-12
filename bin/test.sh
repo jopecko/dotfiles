@@ -6,6 +6,7 @@ cd "$(dirname "$0")/.."
 
 scripts=()
 while IFS= read -r file; do
+    [ -f "$file" ] || continue
     case "$file" in
         bash/*) ;;
         *) head -n 1 "$file" | grep -qE '^#!.*[/ ](ba)?sh( |$)' && scripts+=("$file") ;;
