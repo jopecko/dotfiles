@@ -5,7 +5,11 @@
 add_to_path() {
     # https://superuser.com/a/39995
     if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-        PATH="$1${PATH:+":$PATH"}"
+        if [ "$2" = "prepend" ]; then
+            PATH="$1${PATH:+":$PATH"}"
+        else
+            PATH="${PATH:+"$PATH:"}$1"
+        fi
     fi
 }
 

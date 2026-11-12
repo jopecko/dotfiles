@@ -175,3 +175,9 @@ Thumbs.db
 
 # bloop specific ignores
 .bloop/
+
+**/.claude/settings.local.json
+.claude/worktrees/
+
+# Local working dir for /triage + /resolve-todo skills
+todos/

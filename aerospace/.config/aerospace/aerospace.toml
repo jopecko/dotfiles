@@ -166,6 +166,11 @@ if.app-id = 'com.raspberrypi.rpi-imager'
 check-further-callbacks = true
 run = 'layout floating'
 
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+check-further-callbacks = true
+run = 'layout floating'
+
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 # 'main' binding mode must be always presented
@@ -282,3 +287,5 @@ alt-shift-j = ['join-with down', 'mode main']
 alt-shift-k = ['join-with up', 'mode main']
 alt-shift-l = ['join-with right', 'mode main']
 
+# Use Super (Cmd) + Enter to launch kitty
+#cmd-enter = 'exec-and-forget open -n /opt/homebrew/bin/kitty'

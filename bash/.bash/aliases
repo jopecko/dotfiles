@@ -1,11 +1,10 @@
 # enable color support of ls and also add handy aliases
 if command -v eza >/dev/null; then
-    alias l='eza -la --icons'
+    alias l='eza -la --icons always'
     alias ls='eza'
     alias tree='eza -T'
 elif command -v dircolors >/dev/null 2>&1; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dir\
-colors -b)"
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dir colors -b)"
     alias ls='ls --color=auto'
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'

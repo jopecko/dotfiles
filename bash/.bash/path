@@ -16,3 +16,12 @@ if [ -f "${HOME}/google-cloud-sdk/path.bash.inc" ]; then source "${HOME}/google-
 # The next line enables shell command completion for gcloud.
 # shellcheck source=/dev/null
 if [ -f "${HOME}/google-cloud-sdk/completion.bash.inc" ]; then source "${HOME}/google-cloud-sdk/completion.bash.inc"; fi
+
+HOMEBREW_PREFIX="/opt/homebrew";
+
+if [ -d $HOMEBREW_PREFIX ]; then
+    export HOMEBREW_PREFIX=$HOMEBREW_PREFIX
+    # make sure homebrew makes it to the head of the PATH
+    export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH"
+fi
+
