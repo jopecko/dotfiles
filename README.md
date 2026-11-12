@@ -31,6 +31,18 @@ contents into `$HOME`.
 Put secrets and settings for one machine in `~/.<short-hostname>.env`.
 `.bashrc` sources this file last. The file is not in the repo.
 
+## Homebrew packages
+
+`Brewfile` lists the shared packages. Casks and other macOS-only packages
+are in its `if OS.mac?` block. Put work and per-machine packages in
+`~/.Brewfile.local`, which is not in the repo. This repo is public, so private
+taps go in the local file.
+
+- `make brew` installs the packages from both files.
+- `brew bundle check --file=Brewfile` shows what is missing or out of date.
+- `brew bundle cleanup --file=Brewfile` lists the installed packages that are
+  in neither file. Add them to a file, or uninstall them.
+
 ## Update a machine
 
 ```sh

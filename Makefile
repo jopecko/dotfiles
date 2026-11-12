@@ -56,6 +56,10 @@ unstow:
 restow: submodules backup
 	@$(STOW_CMD) -R $(PACKAGES)
 
+# Install the packages in Brewfile and ~/.Brewfile.local
+brew:
+	@brew bundle --file="$(DIR)/Brewfile"
+
 # Run shellcheck before every commit
 hooks:
 	@git config core.hooksPath .githooks
@@ -76,9 +80,10 @@ help:
 	@echo "  stow    - Create symlinks for all packages (default)"
 	@echo "  restow  - Reapply symlinks for all packages"
 	@echo "  unstow  - Remove symlinks for all packages (\033[31mcaution\033[0m)"
+	@echo "  brew    - Install the Homebrew packages in Brewfile"
 	@echo "  hooks   - Run shellcheck before every commit"
 	@echo "  test    - Run shellcheck on all shell files"
 	@echo "  help    - Show this help message"
 	@echo ""
 
-.PHONY: all submodules backup stow unstow restow hooks test help
+.PHONY: all submodules backup stow unstow restow brew hooks test help
