@@ -25,7 +25,7 @@ if command -v fabric-ai >/dev/null; then
     # one alias per pattern: `summarize` runs `fabric --pattern summarize`
     for pattern_file in "$HOME"/.config/fabric/patterns/*; do
         [ -e "$pattern_file" ] || continue
-        pattern_name="$(basename "$pattern_file")"
+        pattern_name=${pattern_file##*/}
         # shellcheck disable=SC2139
         alias "${FABRIC_ALIAS_PREFIX:-}${pattern_name}"="fabric --pattern $pattern_name"
     done
