@@ -112,7 +112,7 @@ fi
 
 # path goes first so aliases can detect Homebrew tools like eza.
 # Later files override earlier ones; exports must stay after config.
-for file in path aliases completion config dockerfunc exports functions; do
+for file in path aliases completion config exports functions; do
     # shellcheck source=/dev/null
     source ~/.bash/"$file"
 done
