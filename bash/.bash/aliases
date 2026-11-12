@@ -4,7 +4,7 @@ if command -v eza >/dev/null; then
     alias ls='eza'
     alias tree='eza -T'
 elif command -v dircolors >/dev/null 2>&1; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dir colors -b)"
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'
@@ -30,8 +30,6 @@ alias grepp="ps aux | grep"
 alias ff='find . -follow -name'
 
 alias rm='rm -i'
-alias cp='cp -i --backup=mumbered'
-alias mv='mv -i --backup=numbered'
 alias mkdir='mkdir -p'
 alias ln='ln --backup=numbered'
 
@@ -74,7 +72,7 @@ alias dkd="docker run -d -P"
 alias dki="docker run -t -i -P"
 
 # Get week number
-alias week='date+%V'
+alias week='date +%V'
 
 # Stopwatch
 alias timer='echo "Timer started. Stop with ^D." && date && time cat && date'
@@ -87,10 +85,6 @@ alias ips="sudo ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\
 # Flush Directory Service cache
 alias flush="dscacheutil -flushcache && killall -HUP mDNSResponder"
 
-# View HTTP traffic
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
-
 # Canonical hex dump; some systems have this symlinked
 command -v hd > /dev/null || alias hd="hexdump -C"
 
@@ -101,10 +95,10 @@ command -v md5sum > /dev/null || alias md5sum="md5"
 command -v sha1sum > /dev/null || alias sha1sum="shasum"
 
 # Trim new lines and copy to clipboard
-alias c="tr -d '\n' | xclip -selection clipboard"
+alias c="tr -d '\n' | pbcopy"
 
 # URL-encode strings
-alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
+alias urlencode='python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(sys.argv[1]))"'
 
 # Intuitive map function
 # For example, to list all directories that contain a certain file:
