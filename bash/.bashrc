@@ -18,7 +18,7 @@ for file in ~/.java_profile ~/.env_vars ~/.env; do
     [ -f "$file" ] && . "$file"
 done
 
-for file in options completion aliases functions ssh-agent; do
+for file in options completion aliases functions tools ssh-agent; do
     . ~/.bash/"$file"
 done
 unset file

@@ -1,0 +1,59 @@
+#!/bin/bash
+# Shell setup for optional tools. Each block runs only if its tool is installed.
+# shellcheck source=/dev/null
+
+command -v bat >/dev/null && alias cat='bat'
+command -v kubecolor >/dev/null && alias kubectl=kubecolor
+
+export SDKMAN_DIR="$HOME/.sdkman"
+[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && . "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+[ -f "$HOME/etc/conf/fubectl.source" ] && . "$HOME/etc/conf/fubectl.source"
+
+if command -v fzf >/dev/null; then
+    # fzf --bash needs fzf 0.48+; older distro packages ship the scripts instead
+    if fzf_init=$(fzf --bash 2>/dev/null); then
+        eval "$fzf_init"
+    elif [ -r /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+        . /usr/share/doc/fzf/examples/key-bindings.bash
+    fi
+    unset fzf_init
+fi
+
+if command -v fabric-ai >/dev/null; then
+    alias fabric='fabric-ai'
+    # one alias per pattern: `summarize` runs `fabric --pattern summarize`
+    for pattern_file in "$HOME"/.config/fabric/patterns/*; do
+        [ -e "$pattern_file" ] || continue
+        pattern_name="$(basename "$pattern_file")"
+        # shellcheck disable=SC2139
+        alias "${FABRIC_ALIAS_PREFIX:-}${pattern_name}"="fabric --pattern $pattern_name"
+    done
+    unset pattern_file pattern_name
+
+    yt() {
+        if [ "$#" -eq 0 ] || [ "$#" -gt 2 ]; then
+            echo "Usage: yt [-t | --timestamps] youtube-link"
+            echo "Use the '-t' flag to get the transcript with timestamps."
+            return 1
+        fi
+
+        local transcript_flag="--transcript"
+        if [ "$1" = "-t" ] || [ "$1" = "--timestamps" ]; then
+            transcript_flag="--transcript-with-timestamps"
+            shift
+        fi
+        fabric-ai -y "$1" $transcript_flag
+    }
+fi
+
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ]; then
+    . "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
+    [ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && . "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
+elif [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+fi
+
+command -v wt >/dev/null && eval "$(command wt config shell init bash)"

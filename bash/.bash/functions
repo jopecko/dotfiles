@@ -68,3 +68,45 @@ dri() {
 db() {
   docker build -t="$1" .
 }
+
+# current kubectl context and namespace
+kpwd () {
+    kubectl config get-contexts | grep -F '*' | awk -F' ' '{print "(",$2,")", $5}'
+}
+
+# https://www.linuxjournal.com/content/validating-ip-address-bash-script
+# Usage: if valid_ip IP_ADDRESS; then echo good; else echo bad; fi
+function valid_ip()
+{
+    local  ip=$1
+    local  stat=1
+
+    if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        OIFS=$IFS
+        IFS='.'
+        ip=($ip)
+        IFS=$OIFS
+        [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 \
+            && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
+        stat=$?
+    fi
+    return $stat
+}
+
+# https://stackoverflow.com/a/22625150/6831833
+curltime () {
+    curl -w @- -o /dev/null -s "$@" <<'CURL_FORMAT'
+    time_namelookup:  %{time_namelookup}\n
+       time_connect:  %{time_connect}\n
+    time_appconnect:  %{time_appconnect}\n
+   time_pretransfer:  %{time_pretransfer}\n
+      time_redirect:  %{time_redirect}\n
+ time_starttransfer:  %{time_starttransfer}\n
+                    ----------\n
+         time_total:  %{time_total}\n
+CURL_FORMAT
+}
+
+function image_size () {
+  docker manifest inspect -v $1 | grep size | awk -F ':' '{sum+=$NF} END {print sum}' | numfmt --to=iec-i
+}
