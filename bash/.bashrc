@@ -15,16 +15,6 @@ case $- in
 	*) return;;
 esac
 
-# * ~/.path can be used to extend `$PATH`
-# * ~/.extra can be used for other settings you don't want to commit
-for file in ~/.bash/{functions,path,bash_prompt,aliases,dockerfunc,extra,exports}; do
-    if [[ -r "$file" ]] && [[ -f "$file" ]]; then
-        # shellcheck source=/dev/null
-        source "$file"
-    fi  
-done
-unset file
-
 # Case-insensitive globbing (used in pathname expansion)
 shopt -s nocaseglob
 
@@ -120,13 +110,16 @@ if [ -f ~/.env ]; then
   source ~/.env
 fi
 
-for file in $(ls ~/.bash); do
-  source ~/.bash/$file
+# path goes first so aliases can detect Homebrew tools like eza.
+# Later files override earlier ones; exports must stay after config.
+for file in path aliases completion config dockerfunc exports functions; do
+    # shellcheck source=/dev/null
+    source ~/.bash/"$file"
 done
+unset file
 
 # Add some useful directories to our path
-paths="."
-paths="$paths $HOME/bin"
+paths="$HOME/bin"
 paths="$paths /usr/local/sbin"
 
 # I commonly install utilities in $HOME/opt; find any
@@ -136,21 +129,9 @@ for binDir in `find $HOME/opt -type d -name bin`; do
 done
 
 for path in $paths; do
-    add_to_path $path
-    # make sure this entry doesn't already exist in the PATH
-    #if `echo $PATH | egrep $path'(\:|$)' >/dev/null 2>&1`; then
-	#continue
-    #fi
-    #if [ -d $path ]; then
-	#newpath=$newpath:$path
-    #fi
+    add_to_path "$path"
 done
-
-PATH=`echo $PATH | sed -e 's/^\://' -e 's/\:/:/g'`
-
-# our path takes precedence over the one defined by the
-# parent process; therefore place the original at the end
-PATH="$newpath:$PATH"
+unset path paths binDir
 export PATH
 
 # http://help.github.com/working-with-key-passphrases/
