@@ -1,6 +1,6 @@
 #!/bin/bash
-
 # shellcheck source=/dev/null
+
 [ -r ~/.bash/env ] && . ~/.bash/env
 
 # if not running interactively, don't do anything
@@ -9,78 +9,21 @@ case $- in
 	*) return;;
 esac
 
-# Case-insensitive globbing (used in pathname expansion)
-shopt -s nocaseglob
-
-# Append to the Bash history file, rather than overwriting it
-shopt -s histappend
-
-# Autocorrect typos in path names when using `cd`
-shopt -s cdspell
-
-# Enable some Base 4 features when possible:
-# * `autocd`, e.g., `**/qux` will enter `./foo/bar/baz/qux`
-# * Recursive globbing, e.g. `echo **/*.txt`
-for option in autocd globstar; do
-    shopt -s "$option" 2> /dev/null
-done
-
-# Add tab completion for SSH hostnames based on ~/.ssh/config
-# ignoring wildcards
-[[ -e "$HOME/.ssh/config" ]] && complete -o "default" \
-    -o "nospace" \
-    -W "$(grep "^Host" ~/.ssh/config | \
-    grep -v "[?*]" | cut -d " " -f2 | \
-    tr ' ' '\n')" scp sftp ssh 
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-if [ -f "/etc/bashrc" ] ; then
-	# shellcheck source=/dev/null
-	source /etc/bashrc
-fi
+[ -f /etc/bashrc ] && . /etc/bashrc
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-[ -f $HOME/.java_profile ] && . $HOME/.java_profile
-[ -f $HOME/.env_vars ] && . $HOME/.env_vars # machine-dependent env vars
+for file in ~/.java_profile ~/.env_vars ~/.env; do
+    [ -f "$file" ] && . "$file"
+done
 
-if [ -f ~/.env ]; then
-  source ~/.env
-fi
-
-# Later files override earlier ones; exports must stay after config.
-for file in aliases completion config exports functions; do
-    # shellcheck source=/dev/null
-    source ~/.bash/"$file"
+for file in options completion aliases functions ssh-agent; do
+    . ~/.bash/"$file"
 done
 unset file
 
-# launchd (macOS) or the desktop session usually provides an agent, and
-# `ssh -A` forwards one; start our own only when none is reachable.
-ssh_agent_reachable() {
-    ssh-add -l >/dev/null 2>&1
-    [ $? -ne 2 ]
-}
-if command -v ssh-agent >/dev/null && ! ssh_agent_reachable; then
-    SSH_ENV="$HOME/.ssh/environment"
-    # shellcheck source=/dev/null
-    [ -f "$SSH_ENV" ] && . "$SSH_ENV" >/dev/null
-    if ! ssh_agent_reachable; then
-        echo "Initializing new SSH agent..."
-        mkdir -p -m 700 "$HOME/.ssh"
-        ssh-agent | sed 's/^echo/#echo/' >| "$SSH_ENV"
-        chmod 600 "$SSH_ENV"
-        # shellcheck source=/dev/null
-        . "$SSH_ENV" >/dev/null
-        ssh-add
-    fi
-fi
-unset -f ssh_agent_reachable
-
-# System-specific configuration
+# Machine-local settings and secrets, kept out of the repo
 host="${HOSTNAME%%.*}"
-[ -f ${HOME}/.${host}.env ] && . ${HOME}/.${host}.env
+[ -f "$HOME/.$host.env" ] && . "$HOME/.$host.env"
+unset host

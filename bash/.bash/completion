@@ -1,5 +1,21 @@
-# enable programmable completion features
-if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+#!/bin/bash
+# shellcheck source=/dev/null
+
+if ! shopt -oq posix; then
+    if [ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]; then
+        . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+    elif [ -r /usr/share/bash-completion/bash_completion ]; then
+        . /usr/share/bash-completion/bash_completion
+    elif [ -r /etc/bash_completion ]; then
+        . /etc/bash_completion
+    fi
 fi
 
+[ -f "$HOME/google-cloud-sdk/completion.bash.inc" ] && . "$HOME/google-cloud-sdk/completion.bash.inc"
+
+# ssh/scp/sftp hostnames from ~/.ssh/config, skipping wildcard entries
+[[ -e "$HOME/.ssh/config" ]] && complete -o "default" \
+    -o "nospace" \
+    -W "$(grep "^Host" ~/.ssh/config | \
+    grep -v "[?*]" | cut -d " " -f2 | \
+    tr ' ' '\n')" scp sftp ssh

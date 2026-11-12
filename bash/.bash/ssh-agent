@@ -1,0 +1,22 @@
+#!/bin/bash
+# launchd (macOS) or the desktop session usually provides an agent, and
+# `ssh -A` forwards one; start our own only when none is reachable.
+ssh_agent_reachable() {
+    ssh-add -l >/dev/null 2>&1
+    [ $? -ne 2 ]
+}
+if command -v ssh-agent >/dev/null && ! ssh_agent_reachable; then
+    SSH_ENV="$HOME/.ssh/environment"
+    # shellcheck source=/dev/null
+    [ -f "$SSH_ENV" ] && . "$SSH_ENV" >/dev/null
+    if ! ssh_agent_reachable; then
+        echo "Initializing new SSH agent..."
+        mkdir -p -m 700 "$HOME/.ssh"
+        ssh-agent | sed 's/^echo/#echo/' >| "$SSH_ENV"
+        chmod 600 "$SSH_ENV"
+        # shellcheck source=/dev/null
+        . "$SSH_ENV" >/dev/null
+        ssh-add
+    fi
+fi
+unset -f ssh_agent_reachable

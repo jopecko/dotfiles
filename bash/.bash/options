@@ -1,0 +1,32 @@
+#!/bin/bash
+# Interactive shell options, history and prompt.
+
+if [ "$EUID" -eq 0 ]; then
+    PS1="\[\033[0;31m\]\u@\h \w \$ \[\033[0m\]"
+else
+    PS1="\[\033[01;31m\]\h\[\033[01;33m\]:\W\$(__git_ps1 \" (%s)\") \[\033[01;36m\]\$\[\033[00m\] "
+fi
+
+# history -a saves each command at once, so all open shells share history
+PROMPT_COMMAND='__rc=$?; history -a; [ $__rc -eq 0 ] || printf "(╯°□°）╯︵ ┻━┻\n"'
+
+CDPATH=:$GOPATH/src/github.com:$GOPATH/src/golang.org:$GOPATH/src:$HOME/.repos
+
+export CLICOLOR=1
+export LSCOLORS=dxfxcxdxbxegedabagacad   # yellow directories
+
+set -o notify    # report terminated background jobs immediately
+set -o noclobber # refuse to overwrite a file with >
+set -o ignoreeof # ^D does not exit
+
+shopt -s cdspell checkwinsize cmdhist histappend histreedit nocaseglob
+shopt -s autocd globstar 2>/dev/null   # bash 4+
+
+# A shell that skips this file (an IDE terminal, bash --norc) truncates
+# its HISTFILE to the default 500 lines on exit, so keep ours separate.
+HISTFILE=~/.bash_history_full
+export HISTSIZE=50000000
+export HISTFILESIZE=$HISTSIZE
+export HISTCONTROL=ignoredups
+export HISTIGNORE=" *:ls:cd:cd -:pwd:exit:date:* --help:* -h:ls *:ll"
+HISTTIMEFORMAT='%F %T '
