@@ -74,8 +74,6 @@ brew "go"
 brew "go-task"
 # Kubernetes package manager
 brew "helm"
-# Add GitHub support to git on the command-line
-brew "hub"
 # Feature-rich interactive Jira CLI
 brew "jira-cli"
 # Lightweight and flexible command-line JSON processor
